@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+
+<form id="search" action="" method="post">
+  <input type="text" name="s_text">
+  <input id="but" type="submit" name="submit" value="Search">
+</form>
+
+<div id="first">
+
+
+
+
+</div>
+  </body>
+  <script  type="text/javascript">
+  const API_KEY = '42918fcf1850ebe16b6003696073bad3';
+
+  document
+    .querySelector('#search')
+    .addEventListener('submit', function onSubmit(e) {
+      const form = e.target;
+
+      fetchContent(form.s_text.value);
+
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`)
+      .then((response) => response.json())
+      .then(renderMovies);
+
+
+
+
+  //url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${req}`
+
+function fetchContent(q) {
+  const query = q.split(' ').join('+');
+  url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`;
+  fetch(url)
+    .then((response) => response.json())
+    .then(renderMovies);
+}
+
+
+function renderMovies(data) {
+  console.log(data);
+  //  Жанр: ${data.results[i].genres[0].name} </br>
+  var text = document.querySelector('#first');
+  let content = '';
+
+  for (let movie of data.results) {
+    content += renderMovie(movie);
+  }
+
+  text.innerHTML = content;
+}
+
+function renderMovie(movie) {
+  return `
+    <div >
+      <h2>${movie.original_title}</h2>
+      <table style="text-align:left;">
+      <tr>
+        <td>
+        <img style="width:200px;" src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
+        </td>
+        <td>
+          <span style="font-size: 14px">
+
+          Оцінка: ${movie.vote_average}/10 </br>
+          Кількість голосів: ${movie.vote_count}</br>
+          Дата виходу: ${movie.release_date}</br>
+          Опис: </br>
+          ${movie.overview}
+
+          </span>
+        <td>
+      </tr>
+      </table>
+    </  div>
+  `;
+}
+
+
+  </script>
+
+</html>
